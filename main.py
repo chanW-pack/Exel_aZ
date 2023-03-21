@@ -2,24 +2,52 @@ import os
 from openpyxl import load_workbook
 from openpyxl import Workbook
 
-path = "./files"
-file_list = os.listdir(path)
-print(file_list)
+## 다수의 파일 불러오기
+#path = "./files"
+#file_list = os.listdir(path)
+##print(file_list)
+#results = []
+#for file_name_raw in file_list:
+#    file_name = "./files/" + file_name_raw
+#    wb = load_workbook(filename=file_name, data_only=True)
+#    ws = wb['DISK_SUMM']
+#    result = []
+#    result.append(file_name_raw)
+#    result.append(ws['B2'].value)
+#    result.append(ws['C2'].value)
+#    result.append(ws['E2'].value)
+#    result.append(ws['E3'].value)
+#    results.append(result)
+#print(results)
 
-results = []
-for file_name_raw in file_list:
-    file_name = "./files/" + file_name_raw
-    wb = load_workbook(filename=file_name, data_only=True)
-    ws = wb['DISK_SUMM']
-    result = []
-    result.append(file_name_raw)
-    result.append(ws['B2:B55'].value)
-    result.append(ws['C2:C55'].value)
-    result.append(ws['E2'].value)
-    result.append(ws['E3'].value)
-    results.append(result)
-print(results)
 
+
+# 파일 단일 불러오기
+file1 = './files/localhost_230102_0000.nmon.xlsx'
+dan_wb = load_workbook(file1)
+#dan_wb = dan_ws.active
+dan_ws = dan_wb['DISK_SUMM']
+
+ 
+idx = []
+for m in range(0,10):
+    col1 = dan_ws.cell(row=m+1,column=1).value
+    print(col1)
+    idx.append(col1)
+ 
+ 
+#print(sum(idx))
+#print(len(idx))
+print('#####')
+
+wbb = load_workbook(file1)
+wss = wbb['DISK_SUMM']
+#하나에 컬럼에 대한 값을 가져오기
+col_BB = wss["C"] #영어 column 만 가지고 오기
+#col_B 값 출력하기
+for cell_0 in col_BB:
+    print(cell_0.value)  #가지고온 col_B의 인덱스 값 확인 = print(col_B)
+print('addd')
 
 #wb = Workbook()
 #ws = wb.active

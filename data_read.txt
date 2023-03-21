@@ -1,4 +1,27 @@
-  from openpyxl import load_workbook
+  
+print("22222222")
+# 두번쨰 방법
+file_path = './files/localhost_230102_0000.nmon.xlsx'
+sheet_name = 'DISK_SUMM'
+column = 'B'
+
+# 엑셀 파일 불러오기
+workbook = load_workbook(filename=file_path)
+
+# Sheet1 시트 불러오기
+worksheet = workbook[sheet_name]
+
+# A열 데이터 불러오기
+data = []
+for row in worksheet[column]:
+    data.append(row.value)
+    if row.row == worksheet.max_row:
+        break
+
+# 데이터 확인
+print(data)
+
+from openpyxl import load_workbook
 
 
         # data_only=True로 해줘야 수식이 아닌 값으로 받아온다. 
@@ -44,4 +67,6 @@
         load_ws.cell(4, 3, 21470)
         load_ws.cell(5, 3, 1470)
         load_ws.cell(6, 3, 6470)
-        load_wb.save("C:/Users/Administrator/Desktop/기준/프로그래밍/과제대행/주식데이터크롤링/output.xlsx")
+        load_wb.save
+
+

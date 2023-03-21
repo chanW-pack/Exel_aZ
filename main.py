@@ -21,11 +21,11 @@ from openpyxl import Workbook
 #print(results)
 
 
-
+print("111111111")
 # 파일 단일 불러오기
 file1 = './files/localhost_230102_0000.nmon.xlsx'
 dan_wb = load_workbook(file1)
-#dan_wb = dan_ws.active
+#dan_wb = dan_ws.active  //첫 시트
 dan_ws = dan_wb['DISK_SUMM']
 
  
@@ -35,19 +35,23 @@ for m in range(0,10):
     print(col1)
     idx.append(col1)
  
- 
 #print(sum(idx))
 #print(len(idx))
 print('#####')
 
+
 wbb = load_workbook(file1)
 wss = wbb['DISK_SUMM']
 #하나에 컬럼에 대한 값을 가져오기
-col_BB = wss["C"] #영어 column 만 가지고 오기
+col_BB = wss["C1:C5"] #영어 column 만 가지고 오기
 #col_B 값 출력하기
+
 for cell_0 in col_BB:
     print(cell_0.value)  #가지고온 col_B의 인덱스 값 확인 = print(col_B)
-print('addd')
+
+
+
+
 
 #wb = Workbook()
 #ws = wb.active

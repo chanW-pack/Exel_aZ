@@ -1,0 +1,20 @@
+results = []
+for file_name_raw in file_list:
+    file_name = "./files/" + file_name_raw
+    wb = load_workbook(filename=file_name, data_only=True)
+    ws = wb['DISK_SUMM']
+    result = []
+    result.append(file_name_raw)
+    result.append(ws['B2'].value)
+    result.append(ws['C2'].value)
+    result.append(ws['E2'].value)
+    result.append(ws['E3'].value)
+    results.append(result)
+print(results)
+
+#하나에 컬럼에 대한 값을 가져오기
+col_B = ws['C'] #영어 column 만 가지고 오기
+
+#col_B 값 출력하기
+for cell in col_B:
+    print(cell.value)  #가지고온 col_B의 인덱스 값 확인 = print(col_B)

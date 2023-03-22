@@ -1,65 +1,32 @@
-import os
-from openpyxl import load_workbook
-from openpyxl import Workbook
+# step1.관련 모듈 및 패키지 import
+import glob
+import win32com.client
 
-## 다수의 파일 불러오기
-#path = "./files"
-#file_list = os.listdir(path)
-##print(file_list)
-#results = []
-#for file_name_raw in file_list:
-#    file_name = "./files/" + file_name_raw
-#    wb = load_workbook(filename=file_name, data_only=True)
-#    ws = wb['DISK_SUMM']
-#    result = []
-#    result.append(file_name_raw)
-#    result.append(ws['B2'].value)
-#    result.append(ws['C2'].value)
-#    result.append(ws['E2'].value)
-#    result.append(ws['E3'].value)
-#    results.append(result)
-#print(results)
+# 디스크 
+def disk_Az():
+    # step2.win32com(pywin32)를 이용해서 엑셀 어플리케이션 열기
+    excel = win32com.client.Dispatch("Excel.Application")
+    #excel.Visible = True #실제 작동하는 것을 보고 싶을 때 사용
 
+    # step3.엑셀 어플리케이션에 새로운 Workbook 추가
+    wb_new = excel.Workbooks.Add() 
 
-print("111111111")
-# 파일 단일 불러오기
-file1 = './files/localhost_230102_0000.nmon.xlsx'
-dan_wb = load_workbook(file1)
-#dan_wb = dan_ws.active  //첫 시트
-dan_ws = dan_wb['DISK_SUMM']
+    # step4.glob 모듈로 원하는 폴더 내의 모든 xlsx 파일의 경로를 리스트로 반환
+    list_filepath = glob.glob(r'C:\Users\pp\Desktop\Exel_aZ\files\*.xlsx', recursive=True)
 
- 
-idx = []
-for m in range(0,10):
-    col1 = dan_ws.cell(row=m+1,column=1).value
-    print(col1)
-    idx.append(col1)
- 
-#print(sum(idx))
-#print(len(idx))
-print('#####')
+    # step5.엑셀 시트를 추출하고 새로운 엑셀에 붙여넣는 반복문
+    for filepath in list_filepath:
 
+        # 받아온 엑셀 파일의 경로를 이용해 엑셀 파일 열기
+        wb = excel.Workbooks.Open(filepath)
 
-wbb = load_workbook(file1)
-wss = wbb['DISK_SUMM']
-#하나에 컬럼에 대한 값을 가져오기
-col_BB = wss["C1:C5"] #영어 column 만 가지고 오기
-#col_B 값 출력하기
+        # 새로 만든 엑셀 파일에 추가
+        # 추출할wb.Worksheets("추출할 시트명").Copy(Before=붙여넣을 wb.Worksheets("기준 시트명")
+        wb.Worksheets("SYS_SUMM").Copy(Before=wb_new.Worksheets("Sheet1"))
+  
+    # step6. 취합한 엑셀 파일을 "통합 문서"라는 이름으로 저장
+    wb_new.SaveAs(r"C:\Users\pp\Desktop\Exel_aZ\files\통합 문서.xlsx")
 
-for cell_0 in col_BB:
-    print(cell_0.value)  #가지고온 col_B의 인덱스 값 확인 = print(col_B)
-
-
-
-
-
-#wb = Workbook()
-#ws = wb.active
-#for i in results:
-#    ws.append(i)
-#wb.save("results.xlsx")
-#CPU 사용률
-#Mem 사용률
-#DIsk IO 월평균
-
-#https://bebeya.tistory.com/entry/%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EC%97%91%EC%85%80-%EC%BB%AC%EB%9F%BC%EA%B0%92-%EA%B0%80%EC%A0%B8%EC%98%A4%EA%B8%B0-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%84%A3%EA%B8%B0%ED%95%9C%EC%A4%84%EC%94%A9-%EB%A6%AC%EC%8A%A4%ED%8A%B8
+    # step7. 켜져있는 엑셀 및 어플리케이션 모두 종료
+    excel.Quit()
+disk_Az()

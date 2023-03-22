@@ -21,9 +21,9 @@ for filepath in list_filepath:
     # 새로 만든 엑셀 파일에 추가
     # 추출할wb.Worksheets("추출할 시트명").Copy(Before=붙여넣을 wb.Worksheets("기준 시트명")
     wb.Worksheets("SYS_SUMM").Copy(Before=wb_new.Worksheets("Sheet1"))
-
+  
 # step6. 취합한 엑셀 파일을 "통합 문서"라는 이름으로 저장
-wb_new.SaveAs(r"C:\Users\pp\Desktop\Exel_aZ\files\통합 문서.xlsx")
+wb_new.SaveAs(r"C:\Users\pp\Desktop\Exel_aZ\files\통통 문서.xlsx")
 
 # step7. 켜져있는 엑셀 및 어플리케이션 모두 종료
 excel.Quit()

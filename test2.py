@@ -34,3 +34,6 @@ file_input(path)
 
 #for cell_0 in col_BB:
 #    print(cell_0.value)  #가지고온 col_B의 인덱스 값 확인 = print(col_B)
+
+
+

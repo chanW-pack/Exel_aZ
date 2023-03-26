@@ -4,11 +4,16 @@ import os
 import datetime
 from time import sleep
 import openpyxl as op 
+from openpyxl.drawing.image import Image
 from openpyxl.styles import Font, PatternFill, GradientFill, Alignment, Border, Side
-from openpyxl.chart import LineChart, Reference, BarChart, AreaChart
-from openpyxl.chart.label import DataLabelList
-from openpyxl.chart.axis import DateAxis
-from openpyxl.chart.shapes import GraphicalProperties
+import tkinter
+from tkinter import filedialog
+#from openpyxl.chart import LineChart, Reference, BarChart, AreaChart
+#from openpyxl.chart.label import DataLabelList
+#from openpyxl.chart.axis import DateAxis
+#from openpyxl.chart.shapes import GraphicalProperties
+#from openpyxl.utils import range_boundaries
+
 
  # 엑셀 총합 파일을 담을 디렉터리 생성
 def createFolder(directory):
@@ -17,8 +22,6 @@ def createFolder(directory):
             os.makedirs(directory)
     except OSError:
         print ('Error: Creating directory. ' +  directory)
- 
-createFolder('./test')
 
 
 # 엑셀 총합 파일 생성
@@ -32,7 +35,8 @@ def disk_Az():
     wb_new = excel.Workbooks.Add() 
 
     # glob 모듈로 원하는 폴더 내의 모든 xlsx 파일의 경로를 리스트로 반환
-    list_filepath = glob.glob(r'C:\Users\pp\Desktop\Exel_aZ\files\*.xlsx', recursive=True)
+    list_filepath = glob.glob(r'C:\Users\*\Desktop\Exel_aZ\files\*.xlsx', recursive=True)
+ 
 
     # 엑셀 시트를 추출하고 새로운 엑셀에 붙여넣는 반복문
     for filepath in list_filepath:
@@ -45,7 +49,7 @@ def disk_Az():
         wb.Worksheets("DISK_SUMM").Copy(Before=wb_new.Worksheets("Sheet1"))
   
     # 취합한 엑셀 파일을 저장
-    wb_new.SaveAs(r"C:\Users\pp\Desktop\Exel_aZ\test\DISK_SUM.xlsx")
+    wb_new.SaveAs(r"C:\Users\{}\Desktop\Exel_aZ\test\DISK_SUM.xlsx".format(os.getlogin()))
 
     # 켜져있는 엑셀 및 어플리케이션 모두 종료
     excel.Quit()
@@ -54,14 +58,14 @@ def disk_Az():
 def cpu_Az():
     excel = win32com.client.Dispatch("Excel.Application")
     wb_new = excel.Workbooks.Add() 
-    list_filepath = glob.glob(r'C:\Users\pp\Desktop\Exel_aZ\files\*.xlsx', recursive=True)
+    list_filepath = glob.glob(r'C:\Users\*\Desktop\Exel_aZ\files\*.xlsx', recursive=True)
 
     for filepath in list_filepath:
 
         wb = excel.Workbooks.Open(filepath)
         wb.Worksheets("CPU_ALL").Copy(Before=wb_new.Worksheets("Sheet1"))
 
-    wb_new.SaveAs(r"C:\Users\pp\Desktop\Exel_aZ\test\CPU_SUM.xlsx")
+    wb_new.SaveAs(r"C:\Users\{}\Desktop\Exel_aZ\test\CPU_SUM.xlsx".format(os.getlogin()))
 
     excel.Quit()
 
@@ -69,14 +73,14 @@ def cpu_Az():
 def mem_Az():
     excel = win32com.client.Dispatch("Excel.Application")
     wb_new = excel.Workbooks.Add() 
-    list_filepath = glob.glob(r'C:\Users\pp\Desktop\Exel_aZ\files\*.xlsx', recursive=True)
+    list_filepath = glob.glob(r'C:\Users\*\Desktop\Exel_aZ\files\*.xlsx', recursive=True)
 
     for filepath in list_filepath:
         
         wb = excel.Workbooks.Open(filepath)
         wb.Worksheets("MEM").Copy(Before=wb_new.Worksheets("Sheet1"))
 
-    wb_new.SaveAs(r"C:\Users\pp\Desktop\Exel_aZ\test\MEM_SUM.xlsx")
+    wb_new.SaveAs(r"C:\Users\{}\Desktop\Exel_aZ\test\MEM_SUM.xlsx".format(os.getlogin()))
 
     excel.Quit()
 
@@ -99,13 +103,13 @@ cell_box = Border(
     top=Side(border_style='medium', color='00000000')
 )
 
-# 현재 날짜
+# 현재 날짜 변수
 global d_today
 d_today = datetime.date.today()
 
 
 def disk_fx():
-    wb = op.load_workbook(r"C:\Users\pp\Desktop\Exel_aZ\test\DISK_SUM.xlsx") #Workbook 객체 생성
+    wb = op.load_workbook(r"C:\Users\{}\Desktop\Exel_aZ\test\DISK_SUM.xlsx".format(os.getlogin())) #Workbook 객체 생성
     ws = wb["Sheet1"] 
 
     # cell 병합
@@ -143,115 +147,206 @@ def disk_fx():
     # cell 값 적용
     
     
-    ws["B2"].value = "Disk Read KB/s"
-    ws["F2"].value = "Disk Write KB/s"
-    ws["B4"].value = "=AVERAGE('DISK_SUMM:DISK_SUMM (4)'!B59)"
-    ws["F4"].value = "=AVERAGE('DISK_SUMM:DISK_SUMM (4)'!C59)"
+    ws["B2"].value = "Disk Read MB/s"
+    ws["F2"].value = "Disk Write MB/s"
+    ws["B4"].value = "=AVERAGE('DISK_SUMM:DISK_SUMM (4)'!B59)/1000"
+    ws["F4"].value = "=AVERAGE('DISK_SUMM:DISK_SUMM (4)'!C59)/1000"
     ws["J2"].value = f"Disk Read/Write 월 평균 계산기               {d_today}"
     ws["R2"].value = "문의사항                                                     TS팀 박찬우                                              tel: 010-9085-0857             chanwoo9730@naver.com"
+
+    #이미지 파일 경로 및 파일명
+    path = r"C:\Users\{}\Desktop\Exel_aZ".format(os.getlogin())
+    number_file = "DIsk.png"
+    #Image 클래스의 객체 img 선언 : Image 클래스 선언시 매개변수는 이미지 파일 경로이다.
+    img = Image(path + "/" + number_file)
+    #WorkSheet의 add_image 함수 사용 : 매개변수는 각각 Image 객체, 불러올 위치(A1)
+    ws.add_image(img,"B7")
+ 
+    # 결과 시트 수정
+    wb.move_sheet(ws, -4) 
+    
+    ws = wb["Sheet1"]
+    ws.title = "DISK_Result"
+    
+    wb.save("./test/DISK_SUM.xlsx")
+    sleep(1)
+
+
+def cpu_fx():
+    wb = op.load_workbook(r"C:\Users\{}\Desktop\Exel_aZ\test\CPU_SUM.xlsx".format(os.getlogin())) #Workbook 객체 생성
+    ws = wb["Sheet1"] #WorkSheet 객체 생성("무" Sheet)
+
+    # cell 병합
+    ws.merge_cells("B2:I3")
+    ws.merge_cells("B4:I5")
+
+    ws.merge_cells("J2:Q5")
+    ws.merge_cells("R2:U5")
+
+    # font 지정
+    ws['B2'].font = Az_val_1
+    ws['B4'].font = Az_val_2
+    ws['J2'].font = Title
+    ws['R2'].font = add_inq
+           
+    # cell 배경색 추가
+    ws['B2'].fill = PatternFill(start_color='B4C6E7', fill_type = 'solid')
+    ws['J2'].fill = PatternFill(start_color='FFE699', fill_type = 'solid')
+    ws['R2'].fill = PatternFill(start_color='D6DCE4', fill_type = 'solid')
+
+    # cell 정렬 적용 // wrap_text=자동 줄바꿈
+    ws['B2'].alignment = Alignment(vertical="center")
+    ws['R2'].alignment = Alignment(horizontal="left", vertical="top", wrap_text = True)
+    ws['J2'].alignment = Alignment(horizontal="center", vertical="center", wrap_text = True)
+
+    # cell 값 적용
+    ws["B2"].value = "CPU Utilization Average (%)"
+    ws["B4"].value = "=AVERAGE('CPU_ALL:CPU_ALL (4)'!J59)"
+    ws["J2"].value = f"CPU Utilization 월 평균 계산기                  {d_today}"
+    ws["R2"].value = "문의사항                                                     TS팀 박찬우                                              tel: 010-9085-0857             chanwoo9730@naver.com"
+
+        #이미지 파일 경로 및 파일명
+    path = r"C:\Users\{}\Desktop\Exel_aZ".format(os.getlogin())
+    number_file = "CPU.png"
+    #Image 클래스의 객체 img 선언 : Image 클래스 선언시 매개변수는 이미지 파일 경로이다.
+    img = Image(path + "/" + number_file)
+    #WorkSheet의 add_image 함수 사용 : 매개변수는 각각 Image 객체, 불러올 위치(A1)
+    ws.add_image(img,"B7")
 
     # 결과 시트 수정
     wb.move_sheet(ws, -4) 
     
     ws = wb["Sheet1"]
-    ws.title = "Result"
+    ws.title = "CPU_Result"
     
-    wb.save("./test/DISK_SUM.xlsx")
-    sleep(3)
+    wb.save("./test/CPU_SUM.xlsx")
+    sleep(1)
 
 
+def mem_Calculation():
+    wb = op.load_workbook(r"C:\Users\{}\Desktop\Exel_aZ\test\MEM_SUM.xlsx".format(os.getlogin())) #Workbook 객체 생성
+    ws1 = wb["MEM"] 
+    ws2 = wb["MEM (2)"] 
+    ws3 = wb["MEM (3)"] 
+    ws4 = wb["MEM (4)"] 
 
-# disk 차트 생성
-def disk_chart():
-    # Workbook 객체 생성 (win32com)
-    excel = win32com.client.Dispatch("Excel.Application")
-    excel.Visible = True
-    wb = excel.Workbooks.Open(r"C:\Users\pp\Desktop\Exel_aZ\test\DISK_SUM.xlsx") 
-    # 시트 데이터 변수로 저장
-    disk_sum  = wb.Worksheets["DISK_SUMM"]
-    disk_sum2 = wb.Worksheets["DISK_SUMM (2)"]
-    disk_sum3 = wb.Worksheets["DISK_SUMM (3)"]
-    disk_sum4 = wb.Worksheets["DISK_SUMM (4)"]
-    ws1 = wb.Worksheets['Result']
-    # 복사 및 숨기기
-    disk_sum.Range("A1:D57").Copy(ws1.Range("W1:Z57"))
-    disk_sum2.Range("A2:D57").Copy(ws1.Range("W58:Z114"))
-    disk_sum3.Range("A2:D57").Copy(ws1.Range("W115:Z171"))
-    disk_sum4.Range("A2:D57").Copy(ws1.Range("W172:Z228"))
-    #ws1['W1:Z230'].font = hide_font
-    excel.Quit()
-    sleep(3)
-    
+    ws1["R1"].value = "memtotal Avg"
+    ws1["S1"].value = "memfree Avg"
+    ws1["T1"].value = "cached Avg"
+    ws1["U1"].value = "buffers Avg"
+    ws1["R4"].value = "Memory in use"
+    ws1["T4"].value = "Average Memory Usage (%)"
+    ws1["R2"].value = "=AVERAGE(B2:B57)"
+    ws1["S2"].value = "=AVERAGE(F2:F57)"
+    ws1["T2"].value = "=AVERAGE(K2:K57)"
+    ws1["U2"].value = "=AVERAGE(N2:N57)"
+    ws1["R5"].value = "=SUM(S2:U2)"
+    ws1["T5"].value = "=100-(R5/R2*100)"
 
-def disk_chart_make():
-    # Workbook 객체 생성 (openpyxl)
-    wb_op = op.load_workbook(r"C:\Users\pp\Desktop\Exel_aZ\test\DISK_SUM.xlsx") 
-    ws_op = wb_op["Result"]
-     
-    for i in range(228):
-        ws_op.append([i])
+    ws2["R1"].value = "memtotal Avg"
+    ws2["S1"].value = "memfree Avg"
+    ws2["T1"].value = "cached Avg"
+    ws2["U1"].value = "buffers Avg"
+    ws2["R4"].value = "Memory in use"
+    ws2["T4"].value = "Average Memory Usage (%)"
+    ws2["R2"].value = "=AVERAGE(B2:B57)"
+    ws2["S2"].value = "=AVERAGE(F2:F57)"
+    ws2["T2"].value = "=AVERAGE(K2:K57)"
+    ws2["U2"].value = "=AVERAGE(N2:N57)"
+    ws2["R5"].value = "=SUM(S2:U2)"
+    ws2["T5"].value = "=100-(R5/R2*100)"
 
-    c1 = LineChart()
-    c1.title = "Disk total KB/s" ## 차트 타이틀
-    c1.style = 13 # 1~48 차트 스타일
-    c1.width = 38.1 ## 차트 폭
-    c1.height = 15 ## 차트 높이
-    #c1.y_axis.title = 'Size' # y축 라벨
-    c1.y_axis.crossAx = 500 ## y축 교차축
+    ws3["R1"].value = "memtotal Avg"
+    ws3["S1"].value = "memfree Avg"
+    ws3["T1"].value = "cached Avg"
+    ws3["U1"].value = "buffers Avg"
+    ws3["R4"].value = "Memory in use"
+    ws3["T4"].value = "Average Memory Usage (%)"
+    ws3["R2"].value = "=AVERAGE(B2:B57)"
+    ws3["S2"].value = "=AVERAGE(F2:F57)"
+    ws3["T2"].value = "=AVERAGE(K2:K57)"
+    ws3["U2"].value = "=AVERAGE(N2:N57)"
+    ws3["R5"].value = "=SUM(S2:U2)"
+    ws3["T5"].value = "=100-(R5/R2*100)"
 
-    ## 날짜 축 설정
-    c1.x_axis = DateAxis(crossAx=100) ## x축을 날짜 축으로 설정
-    c1.x_axis.title = "Date" # x축 라벨
-    #c1.x_axis.number_format = 'd-mmm' ## 일 - 월 세글자만
-    #c1.x_axis.majorTimeUnit = "days" ## 눈금 단위 {'months', 'years', 'days'}
+    ws4["R1"].value = "memtotal Avg"
+    ws4["S1"].value = "memfree Avg"
+    ws4["T1"].value = "cached Avg"
+    ws4["U1"].value = "buffers Avg"
+    ws4["R4"].value = "Memory in use"
+    ws4["T4"].value = "Average Memory Usage (%)"
+    ws4["R2"].value = "=AVERAGE(B2:B57)"
+    ws4["S2"].value = "=AVERAGE(F2:F57)"
+    ws4["T2"].value = "=AVERAGE(K2:K57)"
+    ws4["U2"].value = "=AVERAGE(N2:N57)"
+    ws4["R5"].value = "=SUM(S2:U2)"
+    ws4["T5"].value = "=100-(R5/R2*100)"
 
-    ## 그림 영역 배경색 설정 
-    #props = GraphicalProperties(solidFill="999999") 
-    #c1.plot_area.graphicalProperties = props 
+    wb.save("./test/MEM_SUM.xlsx")
+    sleep(1)
 
-    Disk_read = Reference(ws_op, min_row=1, max_row=228, min_col=24, max_col=25)
-    #Disk_write = Reference(ws_op, min_row=1, max_row=228, min_col=25, max_col=25)
-    #IO_sec = Reference(ws_op, min_row=1, max_row=228, min_col=26, max_col=26)
-
-    #차트 객체 생성
-    c1.add_data(Disk_read, titles_from_data=True)
-    
-    # Style the lines
-    s2 = c1.series[1]
-    s2.smooth = True ## 라인을 매끄럽게 만듬.
-    s2.graphicalProperties.line.width = 100000 # width in EMUs
-    s2.graphicalProperties.line.solidFill = "B4C6E7"
- 
-    s3 = c1.series[0]
-    s3.smooth = True ## 라인을 매끄럽게 만듬.
-    s3.graphicalProperties.line.width = 100000 # width in EMUs
-    s3.graphicalProperties.line.solidFill = "C6E0B4"
-    
-    # 차트 추가
-    ws_op.add_chart(c1, "B7")
-    wb_op.save("./test/DISK_SUM.xlsx")
-    sleep(3)
-
-
-
-def cpu_fx():
-    wb = op.load_workbook(r"C:\Users\pp\Desktop\Exel_aZ\test\CPU_SUM.xlsx") #Workbook 객체 생성
+def mem_fx():
+    wb = op.load_workbook(r"C:\Users\{}\Desktop\Exel_aZ\test\MEM_SUM.xlsx".format(os.getlogin())) #Workbook 객체 생성
     ws = wb["Sheet1"] #WorkSheet 객체 생성("무" Sheet)
 
-    #"B1" Cell에 입력하기
-    ws.cell(row=1, column=2).value = "입력테스트1"
+    # cell 병합
+    ws.merge_cells("B2:I3")
+    ws.merge_cells("B4:I5")
 
-    #"G1" Cell에 입력하기
-    ws["G6"].value = "=AVERAGE('CPU_ALL:CPU_ALL (4)'!J59)"
+    ws.merge_cells("J2:Q5")
+    ws.merge_cells("R2:U5")
 
-    wb.save("./test/CPU_SUM.xlsx")
+    # font 지정
+    ws['B2'].font = Az_val_1
+    ws['B4'].font = Az_val_2
+    ws['J2'].font = Title
+    ws['R2'].font = add_inq
+           
+    # cell 배경색 추가
+    ws['B2'].fill = PatternFill(start_color='B4C6E7', fill_type = 'solid')
+    ws['J2'].fill = PatternFill(start_color='FFE699', fill_type = 'solid')
+    ws['R2'].fill = PatternFill(start_color='D6DCE4', fill_type = 'solid')
+
+    # cell 정렬 적용 // wrap_text=자동 줄바꿈
+    ws['B2'].alignment = Alignment(vertical="center")
+    ws['R2'].alignment = Alignment(horizontal="left", vertical="top", wrap_text = True)
+    ws['J2'].alignment = Alignment(horizontal="center", vertical="center", wrap_text = True)
+
+    # cell 값 적용 
+    ws["B2"].value = "Memory Usage Average (%)"
+    ws["B4"].value = "=AVERAGE('MEM:MEM (4)'!T5)"
+    ws["J2"].value = f"MEM Utilization 월 평균 계산기                  {d_today}"
+    ws["R2"].value = "문의사항                                                     TS팀 박찬우                                              tel: 010-9085-0857             chanwoo9730@naver.com"
+
+    #이미지 파일 경로 및 파일명
+    path = r"C:\Users\{}\Desktop\Exel_aZ".format(os.getlogin())
+    number_file = "MEM.png"
+    #Image 클래스의 객체 img 선언 : Image 클래스 선언시 매개변수는 이미지 파일 경로이다.
+    img = Image(path + "/" + number_file)
+    #WorkSheet의 add_image 함수 사용 : 매개변수는 각각 Image 객체, 불러올 위치(A1)
+    ws.add_image(img,"B7")
+
+    # 결과 시트 수정
+    wb.move_sheet(ws, -4) 
     
-# 함수 실행
-#disk_Az()
-#cpu_Az()
-#mem_Az()
+    ws = wb["Sheet1"]
+    ws.title = "MEM_Result"
+    
+    wb.save("./test/MEM_SUM.xlsx")
+    sleep(1)
 
-#disk_fx()
-#disk_chart()
-#disk_chart_make()
-#cpu_fx()
+    
+# 리소스 분석 새 파일 생성
+def start_pro():
+  createFolder('./test')
+  disk_Az()
+  cpu_Az()
+  mem_Az()
+
+  # 새 파일 계산
+  disk_fx()
+  #disk_chart()
+  #disk_chart_make()
+  cpu_fx()
+  mem_Calculation()
+  mem_fx()

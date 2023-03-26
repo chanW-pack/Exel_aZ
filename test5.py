@@ -8,52 +8,59 @@ from openpyxl.drawing.image import Image
 from openpyxl.styles import Font, PatternFill, GradientFill, Alignment, Border, Side
 import tkinter
 from tkinter import filedialog
+from tkinter import *
 
 
 def AzData_pull():
     root = tkinter.Tk()
     root.withdraw()
-    path = filedialog.askdirectory(parent=root, initialdir="./", title="폴더를 선택 해 주세요")
+    path = filedialog.askdirectory(parent=root, initialdir="./", title="폴더를 선택 해 주세요")                        
     print("path : ", path)
 
-    list_filepath_UI = glob.glob(path + '\*.xlsx', recursive=True)
- 
-    return [list_filepath_UI]
- 
+    list_filepath_UI = glob.glob(path + '/*.xlsx', recursive=True)
 
-# 엑셀 총합 파일 생성
-def disk_Az():
+    return list_filepath_UI
+
+def test1():
+    root = tkinter.Tk()
+    root.withdraw()
+    root.dirName=filedialog.askdirectory()
+    print (root.dirName);
+
+    #root.mainloop()
+def createFolder(directory):
+    try:
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+    except OSError:
+        print ('Error: Creating directory. ' +  directory)
+
+def cpu_Az():
+    gogo = AzData_pull()
+    for i in gogo:
+        print(i)
+    
     excel = win32com.client.Dispatch("Excel.Application")
     wb_new = excel.Workbooks.Add() 
+    #list_filepath = glob.glob(r'C:\Users\*\Desktop\Exel_aZ\files\*.xlsx', recursive=True)
 
-    #list_filepath = glob.glob(r'C:\Users\pp\Desktop\Exel_aZ\files\*.xlsx', recursive=True)
-    list_filepath = AzData_pull()
-  
-    for filepath in list_filepath:
+    for filepath in gogo:
 
-        print(filepath)
-        #wb = excel.Workbooks.Open(filepath)
-        #wb.Worksheets("DISK_SUMM").Copy(Before=wb_new.Worksheets("Sheet1"))
-  
-    #wb_new.SaveAs(r"C:\Users\pp\Desktop\Exel_aZ\test\DISK_SUM.xlsx").format(os.getlogin())
+       wb = excel.Workbooks.Open(filepath)
+       wb.Worksheets("CPU_ALL").Copy(Before=wb_new.Worksheets("Sheet1"))
+
+    path = os.getcwd()
+    print(path)   
+
+    wb_new.SaveAs("{}/gogo/CPU_SUM.xlsx".format(os.getcwd()))
 
     excel.Quit()
 
 #AzData_pull()
+#test1()
+createFolder('./gogo')
+cpu_Az()
 
-
-def cpu_Az():
-    path = "C:/Users/{}/desktop".format(os.getlogin())  # {}부분에 사용자 이름
-    excel = win32com.client.Dispatch("Excel.Application")
-
-    list_filepath = glob.glob(r'C:\Users\{}\Desktop\Exel_aZ\files\*.xlsx'.format(os.getlogin()), recursive=True)
-
-    for filepath in list_filepath:
-
-        print(filepath)
-        
-
-    excel.Quit()
 
 def test():
     path = "C:/Users/{}/desktop".format(os.getlogin())  # {}부분에 사용자 이름
@@ -61,6 +68,5 @@ def test():
     print(path) # C:/Users/lucidyul/desktop
 
 #disk_Az()
-cpu_Az()
-test()
 
+#test()

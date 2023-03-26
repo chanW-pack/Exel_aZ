@@ -23,9 +23,24 @@ def createFolder(directory):
     except OSError:
         print ('Error: Creating directory. ' +  directory)
 
+# UI로 경로 불러오기
+def AzData_pull():
+    global list_filepath_UI
+    root = tkinter.Tk()
+    root.withdraw()
+    path = filedialog.askdirectory(parent=root, initialdir="./", title="폴더를 선택 해 주세요")                        
+    print("path : ", path)
+
+    list_filepath_UI = glob.glob(path + '/*.xlsx', recursive=True)
+    for i in list_filepath_UI: 
+        print(i)
+        
+
 
 # 엑셀 총합 파일 생성
 def disk_Az():
+    DataList = list_filepath_UI
+    
     # win32com(pywin32)를 이용해서 엑셀 어플리케이션을 연다.
     excel = win32com.client.Dispatch("Excel.Application")
     # 실제 작동하는 것을 보고 싶을 때
@@ -35,11 +50,10 @@ def disk_Az():
     wb_new = excel.Workbooks.Add() 
 
     # glob 모듈로 원하는 폴더 내의 모든 xlsx 파일의 경로를 리스트로 반환
-    list_filepath = glob.glob(r'C:\Users\*\Desktop\Exel_aZ\files\*.xlsx', recursive=True)
- 
-
+    # list_filepath = glob.glob(r'C:\Users\*\Desktop\Exel_aZ\files\*.xlsx', recursive=True)
+    
     # 엑셀 시트를 추출하고 새로운 엑셀에 붙여넣는 반복문
-    for filepath in list_filepath:
+    for filepath in DataList:
 
         # 받아온 엑셀 파일의 경로를 이용해 엑셀 파일 열기
         wb = excel.Workbooks.Open(filepath)
@@ -48,39 +62,51 @@ def disk_Az():
         # 추출할wb.Worksheets("추출할 시트명").Copy(Before=붙여넣을 wb.Worksheets("기준 시트명")
         wb.Worksheets("DISK_SUMM").Copy(Before=wb_new.Worksheets("Sheet1"))
   
+    path = os.getcwd()
+    print(path)
     # 취합한 엑셀 파일을 저장
-    wb_new.SaveAs(r"C:\Users\{}\Desktop\Exel_aZ\test\DISK_SUM.xlsx".format(os.getlogin()))
+    wb_new.SaveAs("{}/cw_test/DISK_SUM.xlsx".format(os.getcwd()))
 
     # 켜져있는 엑셀 및 어플리케이션 모두 종료
     excel.Quit()
 
 
 def cpu_Az():
+    DataList = list_filepath_UI
+    
     excel = win32com.client.Dispatch("Excel.Application")
     wb_new = excel.Workbooks.Add() 
-    list_filepath = glob.glob(r'C:\Users\*\Desktop\Exel_aZ\files\*.xlsx', recursive=True)
+    #list_filepath = glob.glob(r'C:\Users\*\Desktop\Exel_aZ\files\*.xlsx', recursive=True)
 
-    for filepath in list_filepath:
+    for filepath in DataList:
 
         wb = excel.Workbooks.Open(filepath)
         wb.Worksheets("CPU_ALL").Copy(Before=wb_new.Worksheets("Sheet1"))
 
-    wb_new.SaveAs(r"C:\Users\{}\Desktop\Exel_aZ\test\CPU_SUM.xlsx".format(os.getlogin()))
+    #wb_new.SaveAs(r"C:\Users\{}\Desktop\Exel_aZ\test\CPU_SUM.xlsx".format(os.getlogin()))
+    path = os.getcwd()
+    print(path)
+    wb_new.SaveAs("{}/cw_test/CPU_SUM.xlsx".format(os.getcwd()))
 
     excel.Quit()
 
 
 def mem_Az():
+    DataList = list_filepath_UI
+    
     excel = win32com.client.Dispatch("Excel.Application")
     wb_new = excel.Workbooks.Add() 
-    list_filepath = glob.glob(r'C:\Users\*\Desktop\Exel_aZ\files\*.xlsx', recursive=True)
+    #list_filepath = glob.glob(r'C:\Users\*\Desktop\Exel_aZ\files\*.xlsx', recursive=True)
 
-    for filepath in list_filepath:
+    for filepath in DataList:
         
         wb = excel.Workbooks.Open(filepath)
         wb.Worksheets("MEM").Copy(Before=wb_new.Worksheets("Sheet1"))
 
-    wb_new.SaveAs(r"C:\Users\{}\Desktop\Exel_aZ\test\MEM_SUM.xlsx".format(os.getlogin()))
+    #wb_new.SaveAs(r"C:\Users\{}\Desktop\Exel_aZ\test\MEM_SUM.xlsx".format(os.getlogin()))
+    path = os.getcwd()
+    print(path)
+    wb_new.SaveAs("{}/cw_test/MEM_SUM.xlsx".format(os.getcwd()))
 
     excel.Quit()
 
@@ -109,7 +135,10 @@ d_today = datetime.date.today()
 
 
 def disk_fx():
-    wb = op.load_workbook(r"C:\Users\{}\Desktop\Exel_aZ\test\DISK_SUM.xlsx".format(os.getlogin())) #Workbook 객체 생성
+    path = os.getcwd()
+    print(path)
+    #wb = op.load_workbook(r"C:\Users\{}\Desktop\Exel_aZ\test\DISK_SUM.xlsx".format(os.getlogin())) #Workbook 객체 생성
+    wb = op.load_workbook("{}/cw_test/DISK_SUM.xlsx".format(os.getcwd()))
     ws = wb["Sheet1"] 
 
     # cell 병합
@@ -168,12 +197,17 @@ def disk_fx():
     ws = wb["Sheet1"]
     ws.title = "DISK_Result"
     
-    wb.save("./test/DISK_SUM.xlsx")
+    #wb.save("./test/DISK_SUM.xlsx")
+    wb.save("{}/cw_test/DISK_SUM.xlsx".format(os.getcwd()))
+
     sleep(1)
 
 
 def cpu_fx():
-    wb = op.load_workbook(r"C:\Users\{}\Desktop\Exel_aZ\test\CPU_SUM.xlsx".format(os.getlogin())) #Workbook 객체 생성
+    #wb = op.load_workbook(r"C:\Users\{}\Desktop\Exel_aZ\test\CPU_SUM.xlsx".format(os.getlogin())) #Workbook 객체 생성
+    path = os.getcwd()
+    print(path)
+    wb = op.load_workbook("{}/cw_test/CPU_SUM.xlsx".format(os.getcwd()))
     ws = wb["Sheet1"] #WorkSheet 객체 생성("무" Sheet)
 
     # cell 병합
@@ -219,12 +253,15 @@ def cpu_fx():
     ws = wb["Sheet1"]
     ws.title = "CPU_Result"
     
-    wb.save("./test/CPU_SUM.xlsx")
+    wb.save("{}/cw_test/CPU_SUM.xlsx".format(os.getcwd()))
     sleep(1)
 
 
 def mem_Calculation():
-    wb = op.load_workbook(r"C:\Users\{}\Desktop\Exel_aZ\test\MEM_SUM.xlsx".format(os.getlogin())) #Workbook 객체 생성
+    #wb = op.load_workbook(r"C:\Users\{}\Desktop\Exel_aZ\test\MEM_SUM.xlsx".format(os.getlogin())) #Workbook 객체 생성
+    path = os.getcwd()
+    print(path)
+    wb = op.load_workbook("{}/cw_test/MEM_SUM.xlsx".format(os.getcwd()))
     ws1 = wb["MEM"] 
     ws2 = wb["MEM (2)"] 
     ws3 = wb["MEM (3)"] 
@@ -282,11 +319,15 @@ def mem_Calculation():
     ws4["R5"].value = "=SUM(S2:U2)"
     ws4["T5"].value = "=100-(R5/R2*100)"
 
-    wb.save("./test/MEM_SUM.xlsx")
+    wb.save("{}/cw_test/MEM_SUM.xlsx".format(os.getcwd()))
+
     sleep(1)
 
 def mem_fx():
-    wb = op.load_workbook(r"C:\Users\{}\Desktop\Exel_aZ\test\MEM_SUM.xlsx".format(os.getlogin())) #Workbook 객체 생성
+    #wb = op.load_workbook(r"C:\Users\{}\Desktop\Exel_aZ\test\MEM_SUM.xlsx".format(os.getlogin())) #Workbook 객체 생성
+    path = os.getcwd()
+    print(path)
+    wb = op.load_workbook("{}/cw_test/MEM_SUM.xlsx".format(os.getcwd()))
     ws = wb["Sheet1"] #WorkSheet 객체 생성("무" Sheet)
 
     # cell 병합
@@ -332,13 +373,16 @@ def mem_fx():
     ws = wb["Sheet1"]
     ws.title = "MEM_Result"
     
-    wb.save("./test/MEM_SUM.xlsx")
+    #wb.save("./test/MEM_SUM.xlsx")
+    wb.save("{}/cw_test/MEM_SUM.xlsx".format(os.getcwd()))
+    
     sleep(1)
 
     
 # 리소스 분석 새 파일 생성
 def start_pro():
-  createFolder('./test')
+  createFolder('./cw_test')
+#AzData_pull()
   disk_Az()
   cpu_Az()
   mem_Az()

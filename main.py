@@ -17,11 +17,16 @@ from tkinter import filedialog
 
  # 엑셀 총합 파일을 담을 디렉터리 생성
 def createFolder(directory):
+    sleep(1)
+    print("디렉터리 생성 중 ...")
+    sleep(1)
+    print("디렉터리가 이미 존재하면 생성하지 않습니다.")
     try:
         if not os.path.exists(directory):
             os.makedirs(directory)
     except OSError:
         print ('Error: Creating directory. ' +  directory)
+    sleep(1)
 
 # UI로 경로 불러오기
 def AzData_pull():
@@ -39,6 +44,16 @@ def AzData_pull():
 
 # 엑셀 총합 파일 생성
 def disk_Az():
+    sleep(1)
+    print("DISK 관련 데이터를 수집합니다.")
+    sleep(1)
+    print(".")
+    sleep(1)
+    print("...")
+    sleep(1)
+    print(".....")
+    sleep(1)
+    print(".......")
     DataList = list_filepath_UI
     
     # win32com(pywin32)를 이용해서 엑셀 어플리케이션을 연다.
@@ -184,10 +199,10 @@ def disk_fx():
     ws["R2"].value = "문의사항                                                     TS팀 박찬우                                              tel: 010-9085-0857             chanwoo9730@naver.com"
 
     #이미지 파일 경로 및 파일명
-    path = r"C:\Users\{}\Desktop\Exel_aZ".format(os.getlogin())
+    path_img = r"C:\Users\{}\Desktop\Exel_aZ".format(os.getlogin())
     number_file = "DIsk.png"
     #Image 클래스의 객체 img 선언 : Image 클래스 선언시 매개변수는 이미지 파일 경로이다.
-    img = Image(path + "/" + number_file)
+    img = Image(path_img + "/" + number_file)
     #WorkSheet의 add_image 함수 사용 : 매개변수는 각각 Image 객체, 불러올 위치(A1)
     ws.add_image(img,"B7")
  
@@ -240,10 +255,10 @@ def cpu_fx():
     ws["R2"].value = "문의사항                                                     TS팀 박찬우                                              tel: 010-9085-0857             chanwoo9730@naver.com"
 
         #이미지 파일 경로 및 파일명
-    path = r"C:\Users\{}\Desktop\Exel_aZ".format(os.getlogin())
+    path_img = r"C:\Users\{}\Desktop\Exel_aZ".format(os.getlogin())
     number_file = "CPU.png"
     #Image 클래스의 객체 img 선언 : Image 클래스 선언시 매개변수는 이미지 파일 경로이다.
-    img = Image(path + "/" + number_file)
+    img = Image(path_img + "/" + number_file)
     #WorkSheet의 add_image 함수 사용 : 매개변수는 각각 Image 객체, 불러올 위치(A1)
     ws.add_image(img,"B7")
 
@@ -360,10 +375,10 @@ def mem_fx():
     ws["R2"].value = "문의사항                                                     TS팀 박찬우                                              tel: 010-9085-0857             chanwoo9730@naver.com"
 
     #이미지 파일 경로 및 파일명
-    path = r"C:\Users\{}\Desktop\Exel_aZ".format(os.getlogin())
+    path_img = r"C:\Users\{}\Desktop\Exel_aZ".format(os.getlogin())
     number_file = "MEM.png"
     #Image 클래스의 객체 img 선언 : Image 클래스 선언시 매개변수는 이미지 파일 경로이다.
-    img = Image(path + "/" + number_file)
+    img = Image(path_img + "/" + number_file)
     #WorkSheet의 add_image 함수 사용 : 매개변수는 각각 Image 객체, 불러올 위치(A1)
     ws.add_image(img,"B7")
 

@@ -1,7 +1,7 @@
 import main
 from tkinter import *
 import tkinter.ttk as ttk
-
+from tkinter.messagebox import *
 
 cw = Tk() 
 cw.title('chanwoojjangjjangman') 
@@ -10,12 +10,17 @@ label = Label(cw,text='Nmon 데이터 분석기!')
 
 label.pack()
 
+
 def search():
         main.AzData_pull()
 
 def start():
-        main.start_pro()
-
+    if askyesno("확인", "정말 진행하시겠습니까?"):
+     #main.start_pro()
+     main.AzData_pull()
+    else:
+     cw.quit
+        
 # 리스트 프레임
 list_frame = Frame(cw)
 list_frame.pack(fill="both", padx=5, pady=5)
@@ -26,6 +31,9 @@ scrollbar.pack(side="right", fill="y")
 list_file = Listbox(list_frame, selectmode="extended", height=15, yscrollcommand=scrollbar.set)
 list_file.pack(side="left", fill="both", expand=True)
 scrollbar.config(command=list_file.yview)
+
+
+
 
 # 저장 경로 프레임
 path_frame = LabelFrame(cw, text="저장경로")

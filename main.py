@@ -8,19 +8,15 @@ from openpyxl.drawing.image import Image
 from openpyxl.styles import Font, PatternFill, GradientFill, Alignment, Border, Side
 import tkinter
 from tkinter import filedialog
+from tkinter.filedialog import askopenfilenames
 #from openpyxl.chart import LineChart, Reference, BarChart, AreaChart
 #from openpyxl.chart.label import DataLabelList
 #from openpyxl.chart.axis import DateAxis
 #from openpyxl.chart.shapes import GraphicalProperties
 #from openpyxl.utils import range_boundaries
 
-
  # 엑셀 총합 파일을 담을 디렉터리 생성
 def createFolder(directory):
-    sleep(1)
-    print("디렉터리 생성 중 ...")
-    sleep(1)
-    print("디렉터리가 이미 존재하면 생성하지 않습니다.")
     try:
         if not os.path.exists(directory):
             os.makedirs(directory)
@@ -30,30 +26,35 @@ def createFolder(directory):
 
 # UI로 경로 불러오기
 def AzData_pull():
-    global list_filepath_UI
+    global list_filepath_UI, path_get
     root = tkinter.Tk()
     root.withdraw()
     path = filedialog.askdirectory(parent=root, initialdir="./", title="폴더를 선택 해 주세요")                        
     print("path : ", path)
 
+    path_get = glob.glob(path , recursive=True)
+    
     list_filepath_UI = glob.glob(path + '/*.xlsx', recursive=True)
     for i in list_filepath_UI: 
         print(i)
-        
+
+def AzData_select():
+    global list_filepath_UI_select, path_get
+    root = tkinter.Tk()
+    root.withdraw()
+    path = askopenfilenames(parent=root, initialdir="/", title="파일을 선택하세요.",
+                           filetypes=(("xlsx 파일", "*.xlsx"), ("all files", "*.*")))
+    print(path)
+
+    path_get = glob.glob(path , recursive=True)
+    
+    list_filepath_UI_select = glob.glob(path + '/*.xlsx', recursive=True)
+    for i in list_filepath_UI: 
+        print(i)
 
 
 # 엑셀 총합 파일 생성
 def disk_Az():
-    sleep(1)
-    print("DISK 관련 데이터를 수집합니다.")
-    sleep(1)
-    print(".")
-    sleep(1)
-    print("...")
-    sleep(1)
-    print(".....")
-    sleep(1)
-    print(".......")
     DataList = list_filepath_UI
     
     # win32com(pywin32)를 이용해서 엑셀 어플리케이션을 연다.
@@ -215,7 +216,7 @@ def disk_fx():
     #wb.save("./test/DISK_SUM.xlsx")
     wb.save("{}/cw_test/DISK_SUM.xlsx".format(os.getcwd()))
 
-    sleep(1)
+    
 
 
 def cpu_fx():
@@ -269,7 +270,7 @@ def cpu_fx():
     ws.title = "CPU_Result"
     
     wb.save("{}/cw_test/CPU_SUM.xlsx".format(os.getcwd()))
-    sleep(1)
+    
 
 
 def mem_Calculation():
@@ -336,7 +337,7 @@ def mem_Calculation():
 
     wb.save("{}/cw_test/MEM_SUM.xlsx".format(os.getcwd()))
 
-    sleep(1)
+    
 
 def mem_fx():
     #wb = op.load_workbook(r"C:\Users\{}\Desktop\Exel_aZ\test\MEM_SUM.xlsx".format(os.getlogin())) #Workbook 객체 생성
@@ -390,22 +391,3 @@ def mem_fx():
     
     #wb.save("./test/MEM_SUM.xlsx")
     wb.save("{}/cw_test/MEM_SUM.xlsx".format(os.getcwd()))
-    
-    sleep(1)
-
-    
-# 리소스 분석 새 파일 생성
-def start_pro():
-  createFolder('./cw_test')
-#AzData_pull()
-  disk_Az()
-  cpu_Az()
-  mem_Az()
-
-  # 새 파일 계산
-  disk_fx()
-  #disk_chart()
-  #disk_chart_make()
-  cpu_fx()
-  mem_Calculation()
-  mem_fx()

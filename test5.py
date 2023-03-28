@@ -1,72 +1,48 @@
-import glob
-import win32com.client
-import os
-import datetime
-from time import sleep
-import openpyxl as op 
-from openpyxl.drawing.image import Image
-from openpyxl.styles import Font, PatternFill, GradientFill, Alignment, Border, Side
-import tkinter
-from tkinter import filedialog
-from tkinter import *
+import tkinter as tk
+import tkinter.ttk as ttk
+import time
 
+root = tk.Tk()  # tkinter root창 생성
 
-def AzData_pull():
-    root = tkinter.Tk()
-    root.withdraw()
-    path = filedialog.askdirectory(parent=root, initialdir="./", title="폴더를 선택 해 주세요")                        
-    print("path : ", path)
+root.title("tkinter 공부") #창 이름
+root.geometry("500x500+200+200") # 창 크기, 가로 x 세로 + 창 출력 위치 좌표
 
-    list_filepath_UI = glob.glob(path + '/*.xlsx', recursive=True)
+# indeterminate --> 프로그램이 동작중인걸 표현할 때 사용하면 좋음, 상태아이콘이 왔다갔다
+progressbar_indeter = ttk.Progressbar(root, maximum=100, mode="indeterminate")
+progressbar_indeter.start(10) # 10ms 마다 움직임
+progressbar_indeter.pack()
 
-    return list_filepath_UI
+# determinate --> 프로그램이 동작중인걸 표현할 때 사용하면 좋음, 상태아이콘이 쭉~채워감
+progressbar_deter  = ttk.Progressbar(root, maximum=80, mode="determinate")
+progressbar_deter.start(5) # 10ms 마다 움직임
+progressbar_deter.pack()
 
-def test1():
-    root = tkinter.Tk()
-    root.withdraw()
-    root.dirName=filedialog.askdirectory()
-    print (root.dirName);
+# 실제 사용자가 원하는 스타일(얼마나 진행되고 있는지 표현)
+p_var2= tk.DoubleVar() # 정수, 실수도 사용하기 위해
+progressbar_status = ttk.Progressbar(root, maximum=100, length=50, variable=p_var2)
+progressbar_status.pack()
 
-    #root.mainloop()
-def createFolder(directory):
-    try:
-        if not os.path.exists(directory):
-            os.makedirs(directory)
-    except OSError:
-        print ('Error: Creating directory. ' +  directory)
+def btncmd_indeter():
+    progressbar_indeter.stop() # 작동 중지
 
-def cpu_Az():
-    gogo = AzData_pull()
-    for i in gogo:
-        print(i)
-    
-    excel = win32com.client.Dispatch("Excel.Application")
-    wb_new = excel.Workbooks.Add() 
-    #list_filepath = glob.glob(r'C:\Users\*\Desktop\Exel_aZ\files\*.xlsx', recursive=True)
+def btncmd_deter():
+    progressbar_deter.stop() # 작동 중지
 
-    for filepath in gogo:
+def btncmd_status():
+    for i in range(1, 100): #progressbar maximum 100으로 설정했으므로
+        time.sleep(0.01)
 
-       wb = excel.Workbooks.Open(filepath)
-       wb.Worksheets("CPU_ALL").Copy(Before=wb_new.Worksheets("Sheet1"))
+        p_var2.set(i)
+        progressbar_status.update() # 프로그래스바 상태아이콘 반영
+        print(p_var2.get())
 
-    path = os.getcwd()
-    print(path)   
+btn = tk.Button(root, text="indeter 정지", command=btncmd_indeter)
+btn.pack()
 
-    wb_new.SaveAs("{}/gogo/CPU_SUM.xlsx".format(os.getcwd()))
+btn = tk.Button(root, text="deter 정지", command=btncmd_deter)
+btn.pack()
 
-    excel.Quit()
+btn = tk.Button(root, text="status 시작", command=btncmd_status)
+btn.pack()
 
-#AzData_pull()
-#test1()
-createFolder('./gogo')
-cpu_Az()
-
-
-def test():
-    path = "C:/Users/{}/desktop".format(os.getlogin())  # {}부분에 사용자 이름
- 
-    print(path) # C:/Users/lucidyul/desktop
-
-#disk_Az()
-
-#test()
+root.mainloop()

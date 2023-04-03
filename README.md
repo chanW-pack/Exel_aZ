@@ -1,6 +1,14 @@
 # Exel_aZ
 nmon 엑셀 분석 프로그램
 
+
+![Untitled 1](https://user-images.githubusercontent.com/84123877/229450747-0c65f119-0ad7-4494-8dd5-02ec9513ce71.png)
+
+`개발 완료 시 예상 화면(03.24)`
+
+![Untitled 4](https://user-images.githubusercontent.com/84123877/229450763-f577cbc6-e789-4937-9ec7-700d020204f4.png)  
+
+
 # 엑셀 데이터 분석 프로그램
 
 ### **개요**

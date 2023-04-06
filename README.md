@@ -449,3 +449,6 @@ GUI로 경로를 불러들이는 과정에서 해당 함수가 각 시트를 불
 `개발 완료 시 예상 화면(03.24)`
 
 ![Untitled 4](https://user-images.githubusercontent.com/84123877/229450763-f577cbc6-e789-4937-9ec7-700d020204f4.png)
+
+### 추가 진행
+csv 데이터 분석 기능 추가
